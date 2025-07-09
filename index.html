@@ -1,10 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-    <title>JSON加载测试</title>
+    <meta charset="UTF-8">
+    <title>团队动态展示</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .news-item { border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+        .date { color: #666; font-size: 0.9em; }
+        .error { color: red; }
+    </style>
 </head>
 <body>
-    <div id="news-container"></div>
-    <script src="js/load.js"></script>
+    <h1>团队最新动态</h1>
+    <div id="news-container">加载中...</div>
+
+    <script>
+        // 动态加载 JSON 数据
+        fetch('data/news.json')
+            .then(response => {
+                if (!response.ok) throw new Error('数据加载失败: ' + response.status);
+                return response.json();
+            })
+            .then(data => {
+                let html = '';
+                data.forEach(item => {
+                    html += `
+                        <div class="news-item">
+                            <h2>${item.title}</h2>
+                            <p class="date">${item.date}</p>
+                            <p>${item.content}</p>
+                        </div>
+                    `;
+                });
+                document.getElementById('news-container').innerHTML = html;
+            })
+            .catch(error => {
+                document.getElementById('news-container').innerHTML = 
+                    `<p class="error">${error.message} (请确保通过 GitHub Pages 访问)</p>`;
+            });
+    </script>
 </body>
 </html>
